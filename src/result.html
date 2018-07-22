@@ -1,0 +1,64 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://api.trello.com/1/client.js?key=0777dc859d30ca2aaacc742eec8261a6"></script>
+
+  <style>
+    .searchResultCardName {
+      font-weight: bold;
+    }
+
+    .searchResultCardDesc {
+      font-size: smaller;
+    }
+
+    .searchHasResult ol a {
+      text-decoration: none;
+    }
+
+    blockquote {
+      background: #f9f9f9;
+      border-left: 10px solid #ccc;
+      margin: 1.5em 10px;
+      padding: 0.5em 10px;
+      quotes: "\201C""\201D""\2018""\2019";
+    }
+
+    blockquote:before {
+      color: #ccc;
+      content: open-quote;
+      font-size: 4em;
+      line-height: 0.1em;
+      margin-right: 0.25em;
+      vertical-align: -0.4em;
+    }
+
+    blockquote p {
+      display: inline;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">
+    <div>
+      <span class="searchInProgress">Searching any cards quoted this card...</span>
+      <div class="searchHasResult">
+        <p>Found below cards quoting this card</p>
+        <p class="searchResultCount"></p>
+        <ol class="resultList">
+        </ol>
+      </div>
+      <div class="searchHasNoResult">
+        This card is not quoted in any other cards.
+      </div>
+    </div>
+  </div>
+  <script src="./js/result.js"></script>
+</body>
+
+</html>
