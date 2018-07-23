@@ -4,15 +4,16 @@ $(".searchHasNoResult").css("visibility", "hidden");
 $(".searchHasResult").css("visibility", "hidden");
 
 var t = TrelloPowerUp.iframe();
-console.log(t);
+//console.log(t);
 
 var card = null;
 // you can access arguments passed to your iframe like so
 var arg = t.arg('arg');
-console.log(arg);
+//console.log(arg);
 
-var authenticationSuccess = function () {
+var authenticationSuccess = function (data) {
   console.log('Successful authentication');
+  console.log(data);
   checkReady();
 };
 
@@ -20,17 +21,20 @@ var authenticationFailure = function () {
   console.log('Failed authentication');
 };
 
-window.Trello.authorize({
-  type: 'popup',
-  name: 'Getting Started Application',
-  scope: {
-    read: 'true',
-    write: 'true'
-  },
-  expiration: 'never',
-  success: authenticationSuccess,
-  error: authenticationFailure
-});
+var checkAuthorize = function() {
+  window.Trello.authorize({
+    type: 'popup',
+    name: 'Card Quote',
+    scope: {
+      read: 'true',
+      write: 'true'
+    },
+    expiration: 'never',
+    success: authenticationSuccess,
+    error: authenticationFailure
+  });
+}
+checkAuthorize();
 
 t.card('id', 'name', 'desc', 'url', 'shortLink', 'idList')
   .then(function (data) {
@@ -55,7 +59,7 @@ function checkReady() {
     return;
   }
   else {
-    console.log("ready");
+    console.log("ready, search card: " + card.shortLink);
   }
 
   window.Trello.get('/search/', {
@@ -65,6 +69,11 @@ function checkReady() {
     console.log(data);
 
     renderSearchResult(data);
+  }, function(error){
+    if (error.responseText && error.responseText === 'invalid token') {
+      window.Trello.setToken(null);
+      checkAuthorize();
+    }
   });
 
 }
