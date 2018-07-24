@@ -53,7 +53,8 @@ function checkReady() {
 function searchCardQuote(card) {
   console.log("ready, search card: " + card.shortLink);
   window.Trello.get('/search/', {
-    query: card.shortLink
+    query: card.shortLink,
+    cards_limit: 1000,
   }, function (data) {
     renderSearchResult(data);
   }, function (error) {
