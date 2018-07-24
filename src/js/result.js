@@ -1,27 +1,29 @@
 /* global TrelloPowerUp */
 
-$(".searchHasNoResult").css("visibility", "hidden");
-$(".searchHasResult").css("visibility", "hidden");
+// $(".searchHasNoResult").css("visibility", "hidden");
+// $(".searchHasResult").css("visibility", "hidden");
+// $(".authenticationFailed").css("visibility", "hidden");
+$(".authenticationFailed").hide();
+$(".searchHasNoResult").hide();
+$(".searchHasResult").hide();
+$(".searchInProgress").show();
+
 
 var t = TrelloPowerUp.iframe();
-//console.log(t);
-
-var card = null;
-// you can access arguments passed to your iframe like so
-var arg = t.arg('arg');
-//console.log(arg);
 
 var authenticationSuccess = function (data) {
-  console.log('Successful authentication');
-  console.log(data);
   checkReady();
 };
 
 var authenticationFailure = function () {
   console.log('Failed authentication');
+  $(".authenticationFailed").show();
+  $(".searchHasNoResult").hide();
+  $(".searchHasResult").hide();
+  $(".searchInProgress").hide();
 };
 
-var checkAuthorize = function() {
+var checkAuthorize = function () {
   window.Trello.authorize({
     type: 'popup',
     name: 'Card Quote',
@@ -34,50 +36,33 @@ var checkAuthorize = function() {
     error: authenticationFailure
   });
 }
-checkAuthorize();
-
-t.card('id', 'name', 'desc', 'url', 'shortLink', 'idList')
-  .then(function (data) {
-    console.log(data);
-    card = data;
-
-
-    checkReady();
-
-  }, function (error) {
-    console.log(error);
-  });
-
-t.render(function () {
-  console.log('render()');
-});
-
-
 
 function checkReady() {
-  if (card == null) {
-    return;
-  }
-  else {
-    console.log("ready, search card: " + card.shortLink);
-  }
+  t.card('id', 'name', 'desc', 'url', 'shortLink', 'idList')
+    .then(function (data) {
+      card = data;
 
+      searchCardQuote(card);
+
+    }, function (error) {
+      console.log("get current card error");
+      console.log(error);
+    });
+}
+
+function searchCardQuote(card) {
+  console.log("ready, search card: " + card.shortLink);
   window.Trello.get('/search/', {
     query: card.shortLink
   }, function (data) {
-    console.log("search result:")
-    console.log(data);
-
     renderSearchResult(data);
-  }, function(error){
+  }, function (error) {
     if (error.responseText && error.responseText === 'invalid token') {
       window.Trello.setToken(null);
       checkAuthorize();
     }
   });
-
 }
-
 function renderSearchResult(data) {
 
   if (!data) {
@@ -106,10 +91,12 @@ function renderSearchResult(data) {
 
     $(".searchInProgress").hide();
     if (resultCount == 0) {
-      $(".searchHasNoResult").css("visibility", "visible");
+      // $(".searchHasNoResult").css("visibility", "visible");
+      $(".searchHasNoResult").show();
     } else {
       $(".searchResultCount").append(resultCount + " results found");
-      $(".searchHasResult").css("visibility", "visible");
+      // $(".searchHasResult").css("visibility", "visible");
+      $(".searchHasResult").show();
     }
   }
 }
@@ -121,3 +108,6 @@ function convertCardDescToHtml(desc) {
 
   return desc.replace(/\n/g, "<br\>");
 }
+
+
+checkAuthorize();
