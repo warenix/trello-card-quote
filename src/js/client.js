@@ -5,7 +5,7 @@ TrelloPowerUp.initialize({
     'card-buttons': function (t, options) {
         return [
             {
-                icon: 'https://github.com/warenix/trello-card-quote/raw/master/src/img/quote.png?v=1',
+                icon: 'https://trello-card-quote.surge.sh/img/quote.png?v=1',
                 text: 'Card Quote',
                 callback: function (t) {
                     return t.popup({
