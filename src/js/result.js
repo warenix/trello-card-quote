@@ -6,7 +6,8 @@
 $(".authenticationFailed").hide();
 $(".searchHasNoResult").hide();
 $(".searchHasResult").hide();
-$(".searchInProgress").show();
+$(".searchBox").hide();
+$(".searchInProgress").hide();
 
 
 var t = TrelloPowerUp.iframe();
@@ -47,11 +48,24 @@ function checkReady() {
     }, function (error) {
       console.log("get current card error");
       console.log(error);
+
+      $(".searchBox").show();
     });
+}
+
+function searchCardQuoteManually() {
+        $(".searchHasResult").hide();
+
+        card = {
+          shortLink: $("#currentCardShortLink").val()
+        };
+        searchCardQuote(card);
 }
 
 function searchCardQuote(card) {
   console.log("ready, search card: " + card.shortLink);
+
+  $(".searchInProgress").show();
   window.Trello.get('/search/', {
     query: card.shortLink,
     cards_limit: 1000,
@@ -72,6 +86,8 @@ function renderSearchResult(data) {
   }
   var count = data.cards.length;
   if (count > 0) {
+    $(".resultList").empty();
+
     var resultCount = 0;
     var resultCard = null;
     for (var i = 0; i < count; ++i) {
@@ -95,6 +111,7 @@ function renderSearchResult(data) {
       // $(".searchHasNoResult").css("visibility", "visible");
       $(".searchHasNoResult").show();
     } else {
+      $(".searchResultCount").empty();
       $(".searchResultCount").append(resultCount + " results found");
       // $(".searchHasResult").css("visibility", "visible");
       $(".searchHasResult").show();
