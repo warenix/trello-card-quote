@@ -124,7 +124,10 @@ function convertCardDescToHtml(desc) {
     return null;
   }
 
-  return desc.replace(/\n/g, "<br\>");
+  var converter = new showdown.Converter();
+  desc = converter.makeHtml(desc);
+  desc = desc.replace(/\n/g, "<br\>");
+  return desc
 }
 
 
